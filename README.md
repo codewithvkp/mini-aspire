@@ -1,22 +1,3 @@
-# Mini-Aspire Loan App
-
-A Laravel app that helps user to apply for loan for a specific term period and then repay the part of amount every week once admin approves the loan application.
-
-This app consists of three different modules,
-
-### Authentication
-
-Contains registration, login and logout functionality for users. App uses [Laravel Passport](https://laravel.com/docs/9.x/passport) for token based authentication system. When user registers or perform login operation, app will return auth token in the response that can be used to authorize protected APIs later.
-
-### Loan application
-
-Contains logic to create, update, delete and approve loan. Loan applications are created by user but can be only approved by admins. This module also contains functionality to get approved/pending loan applications. In theory, via loan application user can inform admin that he wants to apply for a loan for a certain period. Then admin needs to approve that application.
-
-### Loan repayments
-
-Contains logic to get pending/paid loan repayments and repay a specific repayment. Loan repayment records are created once admin approves the loan application. Once loan repayment records are created, user can fetch the list of repayments for a specific loan application and then repay a particular repayment. Currently, app assumes a weekly repayment frequency.
-
-
 ## Project structure
 
 App follows default directory structure of Laravel. Below are the directories that contains app's main logic,
