@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         //$schedule->command('weekly:payment')->everyMinute()->withoutOverlapping();
+        // $schedule->command('inspire')->hourly();
     }
 
     /**

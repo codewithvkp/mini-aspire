@@ -2,30 +2,32 @@
 
 namespace Tests;
 
-use App\Models\Loan;
-use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\Artisan;
+use Laravel\Passport\Passport;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
+    use RefreshDatabase;
 
-    public function createUser($args = [])
+    public function createPersonalClient(): self | static
     {
-        return User::factory()->create($args);
+        Artisan::call('passport:client', [
+            '--personal' => true,
+            '--name' => 'Temp Personal Client',
+            '--no-interaction' => true,
+        ]);
+
+        return $this;
     }
 
-    public function createUserLoan($args = [])
+    public function actingAs(Authenticatable $user, $guard = null): self | static
     {
-        return Loan::factory()->create($args);
-    }
+        Passport::actingAs($user);
 
-    public function authUser()
-    {
-        $user = $this->createUser();
-        Sanctum::actingAs($user);
-
-        return $user;
+        return $this;
     }
 }

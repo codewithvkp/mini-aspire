@@ -1,64 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Mini-Aspire Loan App
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel app that helps user to apply for loan for a specific term period and then repay the part of amount every week once admin approves the loan application.
 
-## About Laravel
+This app consists of three different modules,
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Authentication
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Contains registration, login and logout functionality for users. App uses [Laravel Passport](https://laravel.com/docs/9.x/passport) for token based authentication system. When user registers or perform login operation, app will return auth token in the response that can be used to authorize protected APIs later.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Loan application
 
-## Learning Laravel
+Contains logic to create, update, delete and approve loan. Loan applications are created by user but can be only approved by admins. This module also contains functionality to get approved/pending loan applications. In theory, via loan application user can inform admin that he wants to apply for a loan for a certain period. Then admin needs to approve that application.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Loan repayments
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Contains logic to get pending/paid loan repayments and repay a specific repayment. Loan repayment records are created once admin approves the loan application. Once loan repayment records are created, user can fetch the list of repayments for a specific loan application and then repay a particular repayment. Currently, app assumes a weekly repayment frequency.
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Project structure
 
-### Premium Partners
+App follows default directory structure of Laravel. Below are the directories that contains app's main logic,
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+`app/Models`
 
-## Contributing
+Contains models for user, loan application and loan repayment.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+`app/Http/Controllers`
 
-## Code of Conduct
+Contains all controllers to handle routes functionalities.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+`database/factories`
 
-## Security Vulnerabilities
+Contains factories that can be used to generate mock data for models.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+`database/migrations`
 
-## License
+Contains migrations for database schema.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+`database/seeders`
+
+Contains database seeder for models that can be used to generate mock data to init the app.
+
+`app/Http/Resources/General`
+
+Contains JSON resources for general use that can be used anywhere in the controller to format response data.
+
+`app/Http/Resources/Models`
+
+Contains JSON resources specifically for models.
+
+`app/Http/Requests`
+
+Contains rules to validate route requests that can be injected in controller methods.
+
+`app/Events`
+
+Contains events that can be called after/before a series of actions.
+
+`routes`
+
+Contains all the API routes and controller methods mapping.
+
+`tests/Feature`
+
+Contains all the feature tests.
+
+`app/Actions`
+
+Contains small and isolated actions that can be used separately or in combination to perform a series of operations.
+
+## Installation
+
+### Prerequisites
+
+-  PHP >= 8.0
+-  MySQL >= 8.0
+-  Mcrypt PHP Extension
+-  OpenSSL PHP Extension
+-  Mbstring PHP Extension
+-  Tokenizer PHP Extension
+
+You can execute below file to set up project. It will also create a admin and a normal user that you can use to test the app.
+
+```
+sh ./bin/setup.sh
+```
+
+Once the setup is done, you can run below command to serve an app,
+```
+php artisan serve
+```
+
+### Test cases
+
+To run test cases you can run,
+
+```
+./vendor/bin/phpunit 
+```
+
+## Response structure
+
+#### Success response
+
+```json
+{
+	"data":  {
+		"id": 1,
+		"name": "John Doe",
+		"email": "johndoe@gmail.com",
+		"type": "admin"
+	}
+}
+```
+
+#### Error response
+
+```json
+{
+	"message": "Invalid credentials!"
+}
+```
+
+#### Validation error response
+
+```json
+{
+	"message": "The email field is required.",
+	"errors": {
+		"email": [
+			"The email field is required."
+		]
+	}
+}
+```
+
+## Postman collection
+
+[Here](https://drive.google.com/file/d/1nQSJSCAK2FIS1Hrv4RLAVYAfNH5U20u6/view?usp=sharing) you can find the postman collection for all the APIs that can help user and admin to interact with the application.
+Once you import the collection, set `URL_PREFIX` in collection variable to the base url where app is being served i.e. `http://127.0.0.1:8000`.
+After running `register` and `login` API, the postman will automatically set the `token` variable that will be used by other APIs.
+
+## Test users
+
+You can use below users to test the APIs.
+
+#### Admin user
+
+Email: `admin@gmail.com`
+Password: `password`
+
+#### Normal user
+
+Email: `user@gmail.com`
+Password: `password`
+

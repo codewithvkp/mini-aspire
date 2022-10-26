@@ -6,11 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
-/**
- * @method static create(array $array)
- */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -23,7 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'role_id',
+        'type',
         'password',
     ];
 
@@ -46,11 +43,28 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public const IS_USER = 0;
-    public const IS_ADMIN = 1;
+    /**
+     * Token name for passport authentication
+     */
+    public const PASSPORT_TOKEN_NAME = 'personal_token';
 
-    public function loan()
+    /**
+     * Const for type user
+     */
+    public const TYPE_USER = 'user';
+
+    /**
+     * Const for type admin
+     */
+    public const TYPE_ADMIN = 'admin';
+
+    /**
+     * Determine if this user is admin or not
+     *
+     * @return bool
+     */
+    public function isAdmin()
     {
-        return $this->hasOne(Loan::class);
+        return $this->type === 'admin';
     }
 }

@@ -1,15 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\AdminController;
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Loan\LoanController;
-use App\Http\Controllers\Api\Payment\PaymentController;
+use App\Http\Controllers\LoanApplicationController;
+use App\Http\Controllers\LoanRepaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Mini Aspire API Routes
+| API Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
@@ -18,15 +16,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('auth/register', [AuthController::class, 'register'])->name('auth.register');
-Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
+// Auth routes
 
-Route::middleware('auth:sanctum')->group(function () {
+require __DIR__ . '/auth.api.php';
 
-    Route::apiResource('loan', LoanController::class)->except(['create','destroy']);
-    Route::apiResource('payment',PaymentController::class)->only(['index','show','update']);
-    Route::patch('approve/loan/{id}',AdminController::class);
+// Loan application routes
 
-});
+Route::post('loan-applications/{loan_application}/approve', [
+    LoanApplicationController::class, 'approve'
+]);
+Route::apiResource('loan-applications', LoanApplicationController::class);
 
+// Loan repayments
 
+Route::get('loan-applications/{loan_application}/repayments', [
+    LoanRepaymentController::class, 'index'
+]);
+Route::post('loan-repayments/{loan_repayment}/repay', [
+    LoanRepaymentController::class, 'repay'
+]);
